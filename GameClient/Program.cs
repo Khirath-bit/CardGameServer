@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace GameClient
 {
@@ -10,17 +12,13 @@ namespace GameClient
     {
         static void WorkWithServer(Socket server)
         {
-
             const int maxMessageSize = 1024;
             byte[] response;
             int received;
-
-            while (true)
+            Task.Run(() =>
             {
-
-                try
+                while (true)
                 {
-
                     response = new byte[maxMessageSize];
                     received = server.Receive(response);
                     if (received == 0)
@@ -31,7 +29,17 @@ namespace GameClient
 
                     List<byte> respBytesList = new List<byte>(response);
                     respBytesList.RemoveRange(received, maxMessageSize - received); // truncate zero end
-                    Console.WriteLine("Server: " + Encoding.ASCII.GetString(respBytesList.ToArray()));
+                    Console.WriteLine(Encoding.ASCII.GetString(respBytesList.ToArray()));
+                }
+            });
+
+            while (true)
+            {
+
+                try
+                {
+                    server.Send(Encoding.ASCII.GetBytes(Console.ReadLine()));
+                   
                 }
                 catch (Exception ex)
                 {
@@ -45,13 +53,16 @@ namespace GameClient
         static void Main(string[] args)
         {
 
-            IPEndPoint serverEp = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 2222);
+            var serverEp = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 2222);
 
-            Socket server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            var server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             server.ReceiveTimeout = -1;
 
             // Connect to the server.
-            try { server.Connect(serverEp); }
+            try
+            {
+                server.Connect(serverEp);
+            }
             catch (Exception)
             {
                 Console.WriteLine("Establish connection with server (" + serverEp + ") failed!");

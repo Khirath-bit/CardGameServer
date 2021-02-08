@@ -11,6 +11,9 @@ namespace CardGameServer
     {
         private readonly Socket _serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
+        /// <summary>
+        /// Listens for new clients
+        /// </summary>
         public void Listen()
         {
             try
@@ -18,14 +21,17 @@ namespace CardGameServer
                 _serverSocket.ReceiveTimeout = -1;
                 _serverSocket.Bind(new IPEndPoint(IPAddress.Any, 2222));
                 _serverSocket.Listen(-1);
-                Console.WriteLine("Start listening...");
+                Console.WriteLine("Start listening to port 2222...");
 
                 while (true)
                 {
-                    var client = _serverSocket.Accept();
-                    Console.WriteLine($"Incoming connection from {client.RemoteEndPoint}");
-                    ClientHandler.ActiveClients.Add(client);
-                    ClientHandler.Broadcast("bla");
+                    var clientSocket = _serverSocket.Accept();
+                    var client = new Client
+                    {
+                        WorkingSocket = clientSocket
+                    };
+
+                    ClientHandler.Add(client);
                     new System.Threading.Thread(() =>
                     {
                         try
@@ -34,8 +40,10 @@ namespace CardGameServer
                         }
                         catch (Exception ex)
                         {
-                            ClientHandler.ActiveClients.Remove(client);
+                            ClientHandler.Remove(client);
+                            Console.ForegroundColor = ConsoleColor.DarkRed;
                             Console.WriteLine("Client connection processing error: " + ex.Message);
+                            Console.ForegroundColor = ConsoleColor.Gray;
                         }
                     }).Start();
                 }
@@ -49,25 +57,35 @@ namespace CardGameServer
 
         }
 
-        private async void ProcessClient(Socket client)
+        /// <summary>
+        /// Processes the clients commands
+        /// </summary>
+        private async void ProcessClient(Client client)
         {
-            Console.ReadLine();
             await Task.Run(() =>
             {
-                while (true)
+                try
                 {
-                    var response = new byte[1024];
-                    var received = client.Receive(response);
-                    if (received == 0)
+                    while (true)
                     {
-                        ClientHandler.ActiveClients.Remove(client);
-                        Console.WriteLine("Client closed connection!");
-                        return;
-                    }
+                        var response = new byte[1024];
+                        var received = client.WorkingSocket.Receive(response);
+                        if (received == 0)
+                        {
+                            ClientHandler.Remove(client);
+                            Console.WriteLine("Client closed connection!");
+                            return;
+                        }
 
-                    List<byte> respBytesList = new List<byte>(response);
-                    respBytesList.RemoveRange(received, 1024 - received); // truncate zero end
-                    Console.WriteLine("Client (" + client.RemoteEndPoint + "+: " + Encoding.ASCII.GetString(respBytesList.ToArray()));
+                        var respBytesList = new List<byte>(response);
+                        respBytesList.RemoveRange(received, 1024 - received); // truncate zero end
+                        CommandManager.Execute(client.Id, Encoding.ASCII.GetString(respBytesList.ToArray()));
+                    }
+                }
+                catch (Exception e)
+                {
+                    ClientHandler.Remove(client);
+                    Console.WriteLine($"{client.Id} | {client.Name} closed the connection.");
                 }
             });
         }

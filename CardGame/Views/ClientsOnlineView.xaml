@@ -1,0 +1,16 @@
+﻿<UserControl x:Class="CardGame.Views.ClientsOnlineView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CardGame.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <DataGrid AutoGenerateColumns="False" GridLinesVisibility="Horizontal" FontSize="15" FontFamily="Futura, Trebuchet MS, Arial, sans-serif" CanUserAddRows="False" CanUserResizeColumns="False" CanUserDeleteRows="False" HeadersVisibility="None" ItemsSource="{Binding Connections}">
+           <DataGrid.Columns>
+               <DataGridTextColumn Header="User" Binding="{Binding Name}"></DataGridTextColumn>
+           </DataGrid.Columns>
+       </DataGrid>
+    </Grid>
+</UserControl>
