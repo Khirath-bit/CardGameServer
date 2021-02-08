@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -21,6 +22,11 @@ namespace CardGame.Views
         /// <summary>
         /// Backing field
         /// </summary>
+        private ChatViewViewModel _chatControl;
+
+        /// <summary>
+        /// Backing field
+        /// </summary>
         private bool _connected;
 
         /// <summary>
@@ -35,6 +41,7 @@ namespace CardGame.Views
         {
             _dialogCoordinator = coordinator;
             ClientsOnlineControl = new ClientsOnlineViewViewModel();
+            ChatControl = new ChatViewViewModel();
             Connected = false;
         }
 
@@ -50,6 +57,15 @@ namespace CardGame.Views
         {
             get => _clientsOnlineControl;
             set => SetField(ref _clientsOnlineControl, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the chat control
+        /// </summary>
+        public ChatViewViewModel ChatControl
+        {
+            get => _chatControl;
+            set => SetField(ref _chatControl, value);
         }
 
         /// <summary>
@@ -78,7 +94,8 @@ namespace CardGame.Views
 
             ConnectionManager.SendCommand($"setname {name}");
 
-            ClientsOnlineControl.Load();
+            Thread.Sleep(300);
+            ConnectionManager.SendCommand("list connections");
         }
     }
 }

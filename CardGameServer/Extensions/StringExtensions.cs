@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CardGameServer.Extensions
 {
@@ -9,6 +7,6 @@ namespace CardGameServer.Extensions
         public static bool EqualsIgnoreCase(this string val, string value)
         {
             return string.Equals(val, value, StringComparison.OrdinalIgnoreCase);
-        } 
+        }
     }
 }

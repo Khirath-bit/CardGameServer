@@ -37,14 +37,6 @@ namespace CardGame.Views
         }
 
         /// <summary>
-        /// Loads connection from server
-        /// </summary>
-        public void Load()
-        {
-            ConnectionManager.SendCommand("list connections");
-        }
-
-        /// <summary>
         /// Lists all connections
         /// </summary>
         public async void ListConnections(object data)

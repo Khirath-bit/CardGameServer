@@ -1,37 +1,54 @@
-﻿using System;
+﻿using CardGameServer.Extensions;
+using CardGameServer.Managers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using CardGameServer.Extensions;
-using CardGameServer.Managers;
 
 namespace CardGameServer
 {
     public static class CommandManager
     {
+        public static bool Debug { get; set; }
+
         /// <summary>
         /// Executes a command
         /// </summary>
         public static void Execute(Guid client, string command)
         {
+            if (Debug)
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine($"{ClientHandler.GetById(client).Name} sent {command}");
+                Console.ForegroundColor = ConsoleColor.Gray;
+            }
+
             var segments = command.Split(' ').ToList();
 
             if (segments.Count < 1)
                 return;
 
-            if(segments[0].EqualsIgnoreCase("setname"))
+            if (segments[0].EqualsIgnoreCase("debug"))
+                Debug = !Debug;
+
+            if (segments[0].EqualsIgnoreCase("setname"))
                 ClientHandler.SetName(client, segments[1]);
 
-            if(segments[0].EqualsIgnoreCase("game"))
+            if (segments[0].EqualsIgnoreCase("game"))
                 ExecuteGameCommand(client, segments);
 
-            if(segments[0].EqualsIgnoreCase("list"))
+            if (segments[0].EqualsIgnoreCase("list"))
                 ExecuteListCommand(client, segments);
 
-            if(segments[0].EqualsIgnoreCase("id"))
+            if (segments[0].EqualsIgnoreCase("id"))
                 ClientHandler.SendMessage(client, $"id:{client}");
 
+            var c = ClientHandler.GetById(client);
+
+            if (segments[0].EqualsIgnoreCase("message"))
+            {
+                var msg = command.Remove(0, 8);
+                ClientHandler.Broadcast($"message:{c.Name}:{msg}", client.ToString());
+            }
         }
 
         /// <summary>
@@ -41,13 +58,13 @@ namespace CardGameServer
         {
             commandSegments.RemoveAt(0);
 
-            if(commandSegments[0].EqualsIgnoreCase("start"))
+            if (commandSegments[0].EqualsIgnoreCase("start"))
                 Console.WriteLine($"{client} | {ClientHandler.GetName(client)} requested the game to start");
 
-            if(commandSegments[0].EqualsIgnoreCase("join"))
+            if (commandSegments[0].EqualsIgnoreCase("join"))
                 GameManager.AddParticipant(client);
 
-            if(commandSegments[0].EqualsIgnoreCase("spectate"))
+            if (commandSegments[0].EqualsIgnoreCase("spectate"))
                 GameManager.AddSpectator(client);
 
             if (commandSegments[0].EqualsIgnoreCase("type"))
@@ -75,10 +92,10 @@ namespace CardGameServer
         {
             commandSegments.RemoveAt(0);
 
-            if(commandSegments.Count < 1)
+            if (commandSegments.Count < 1)
                 return;
 
-            if(commandSegments[0].EqualsIgnoreCase("connections"))
+            if (commandSegments[0].EqualsIgnoreCase("connections"))
                 ClientHandler.SendMessage(client, $"list:connections:{ClientHandler.ActiveClients.ToCommaSeparatedString()}");
 
             if (commandSegments[0].EqualsIgnoreCase("participants"))

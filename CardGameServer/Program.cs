@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace CardGameServer
+﻿namespace CardGameServer
 {
     class Program
     {

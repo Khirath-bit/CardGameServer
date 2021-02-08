@@ -12,4 +12,9 @@ namespace CardGame.Enums
         ListAllParticipants,
         ListAllSpectators
     }
+
+    public enum Operations
+    {
+        AddMessage
+    }
 }

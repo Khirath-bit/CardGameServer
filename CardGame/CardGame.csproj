@@ -172,6 +172,14 @@
     <Compile Include="Managers\ConnectionManager.cs" />
     <Compile Include="Managers\ConsoleManager.cs" />
     <Compile Include="Models\Client.cs" />
+    <Compile Include="Models\Message.cs" />
+    <Compile Include="Views\ChatMessageView.xaml.cs">
+      <DependentUpon>ChatMessageView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ChatView.xaml.cs">
+      <DependentUpon>ChatView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ChatViewViewModel.cs" />
     <Compile Include="Views\ClientsOnlineView.xaml.cs">
       <DependentUpon>ClientsOnlineView.xaml</DependentUpon>
     </Compile>
@@ -189,6 +197,14 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\ChatMessageView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ChatView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\ClientsOnlineView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

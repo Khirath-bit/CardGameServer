@@ -21,6 +21,11 @@ namespace CardGame.Managers
         public static Guid ConnectionId { get; set; }
 
         /// <summary>
+        /// Gets or sets the sending task
+        /// </summary>
+        private static Task SendingTask { get; set; }
+
+        /// <summary>
         /// Connects this client to the game server
         /// </summary>
         public static bool Connect()

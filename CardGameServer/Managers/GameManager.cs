@@ -33,7 +33,7 @@ namespace CardGameServer.Managers
                 Participants.Remove(client);
                 Console.WriteLine($"Removed {client.Id}|{client.Name} from the game of {CurrentGameType} as Participant");
             }
-            
+
             Spectators.Add(client);
 
             Console.WriteLine($"Spectator {client.Id}|{client.Name} added to the game of {CurrentGameType}");
@@ -46,10 +46,10 @@ namespace CardGameServer.Managers
         {
             var client = ClientHandler.GetById(id);
 
-            if(client == null)
+            if (client == null)
                 return;
 
-            if(Spectators.Contains(client))
+            if (Spectators.Contains(client))
                 return;
 
             if (Participants.Contains(client))
@@ -57,7 +57,7 @@ namespace CardGameServer.Managers
                 Console.WriteLine($"Removed {client.Id}|{client.Name} from the game of {CurrentGameType} as Participant");
                 Participants.Remove(client);
             }
-            
+
             Spectators.Add(client);
 
             Console.WriteLine($"Spectator {client.Id}|{client.Name} added to the game of {CurrentGameType}");
@@ -76,7 +76,7 @@ namespace CardGameServer.Managers
                 Console.WriteLine($"Removed {client.Id}|{client.Name} from the game of {CurrentGameType} as Spectator");
                 Spectators.Remove(client);
             }
-            
+
             Participants.Add(client);
 
             Console.WriteLine($"Participant {client.Id}|{client.Name} added to the game of {CurrentGameType}");
@@ -111,12 +111,12 @@ namespace CardGameServer.Managers
         /// </summary>
         public static void SetGameType(Guid id, GameType type)
         {
-            if(CurrentGameType == type)
+            if (CurrentGameType == type)
                 return;
 
             var client = ClientHandler.GetById(id);
 
-            if(client == null)
+            if (client == null)
                 return;
 
             Console.WriteLine($"{client.Id} | {client.Name} changed the game type from {CurrentGameType} to {type}");

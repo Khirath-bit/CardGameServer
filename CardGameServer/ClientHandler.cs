@@ -1,10 +1,9 @@
-﻿using System;
+﻿using CardGameServer.Extensions;
+using CardGameServer.Managers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Sockets;
 using System.Text;
-using CardGameServer.Extensions;
-using CardGameServer.Managers;
 
 namespace CardGameServer
 {
@@ -16,13 +15,16 @@ namespace CardGameServer
         /// Broadcasts to all clients
         /// </summary>
         /// <param name="content"></param>
-        public static void Broadcast(string content)
+        public static void Broadcast(string content, string id = null)
         {
-            if(!ActiveClients.Any())
+            if (!ActiveClients.Any())
                 return;
 
             foreach (var client in ActiveClients)
             {
+                if (Guid.TryParse(id, out var filter) && client.Id == filter)
+                    continue;
+
                 client.WorkingSocket.Send(Encoding.ASCII.GetBytes(content));
             }
         }
@@ -53,12 +55,16 @@ namespace CardGameServer
         /// </summary>
         public static void SetName(Guid id, string name)
         {
-            if(!ActiveClients.Exists(a => a.Id == id))
+            if (!ActiveClients.Exists(a => a.Id == id))
                 return;
 
             ActiveClients.First(f => f.Id == id).Name = name;
 
             Console.WriteLine($"{id} registered as {name}");
+
+            Broadcast($"list:connections:{ActiveClients.ToCommaSeparatedString()}", id.ToString());
+            Broadcast($"list:participants:{GameManager.Participants.ToCommaSeparatedString()}", id.ToString());
+            Broadcast($"list:spectators:{GameManager.Spectators.ToCommaSeparatedString()}", id.ToString());
         }
 
         /// <summary>
@@ -89,6 +95,9 @@ namespace CardGameServer
                 return;
 
             var client = ActiveClients.First(a => a.Id == id);
+
+            if(CommandManager.Debug)
+                Console.WriteLine($"Send message {message} to {client.Name}");
 
             client.WorkingSocket.Send(Encoding.ASCII.GetBytes(message));
         }

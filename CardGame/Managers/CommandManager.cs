@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CardGame.Enums;
 using CardGame.Extensions;
+using CardGame.Models;
 using Utility.MVVM;
 
 namespace CardGame.Managers
@@ -29,6 +30,9 @@ namespace CardGame.Managers
 
             if (segments[0].EqualsIgnoreCase("id"))
                 ConnectionManager.ConnectionId = Guid.Parse(segments[1]);
+
+            if (segments[0].EqualsIgnoreCase("message"))
+                Mediator.NotifyEnumColleagues(Operations.AddMessage, new Message{User = segments[1], Value = segments[2]}) ;
 
         }
 
