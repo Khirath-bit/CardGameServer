@@ -24,5 +24,15 @@ namespace CardGame.Views
         {
             InitializeComponent();
         }
+
+        private void UIElement_OnKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter && DataContext is ChatViewViewModel vm)
+            {
+                vm.SendMessage();
+                messageinput.Text = "";
+            }
+
+        }
     }
 }

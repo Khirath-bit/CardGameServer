@@ -1,0 +1,72 @@
+﻿<UserControl x:Class="CardGame.Views.SwimmingView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CardGame.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="/CardImages/BG.jpg" Stretch="UniformToFill"></ImageBrush>
+        </Grid.Background>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <!--Middle cards-->
+        <ItemsControl ItemsSource="{Binding MiddleCards}" Margin="0,10" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Image Source="{Binding ImgSrc}" Margin="10,0"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <!--Player cards-->
+        <ItemsControl ItemsSource="{Binding PlayerCards}" Margin="0,10" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Image Source="{Binding ImgSrc}" Margin="10,0"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <!--Info panel-->
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <!--Beginners buttons casually hidden-->
+            <Button Visibility="{Binding IsBeginner, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">Links nehmen</Button>
+            <Button Visibility="{Binding IsBeginner, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">Rechts nehmen</Button>
+
+            <!--Turn options-->
+            <Button Visibility="{Binding MiddleCardsSet, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">Schieben</Button>
+            <Button Visibility="{Binding MiddleCardsSet, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">Passen</Button>
+
+            <!--Info box-->
+            <TextBlock FontSize="20" Foreground="White" Background="Transparent" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" VerticalAlignment="Center" HorizontalAlignment="Center">Du darfst beginnen!</TextBlock>
+        </Grid>
+    </Grid>
+</UserControl>

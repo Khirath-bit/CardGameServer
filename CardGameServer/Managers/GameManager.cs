@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using CardGameServer.DataObjects;
 
 namespace CardGameServer.Managers
 {
@@ -21,6 +23,31 @@ namespace CardGameServer.Managers
         public static List<Client> Spectators { get; set; } = new List<Client>();
 
         /// <summary>
+        /// Starts the game
+        /// </summary>
+        public static void StartGame()
+        {
+            if (!Participants.Any())
+            {
+                Console.WriteLine("Can not start the game because 0 participants joined.");
+                return;
+            }
+
+            switch (CurrentGameType)
+            {
+                case GameType.None:
+                    break;
+                case GameType.Schwimmen:
+                    new SwimmingGameManager().Start();
+                    break;
+                case GameType.Durak:
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        /// <summary>
         /// Adds a spectator
         /// </summary>
         public static void AddSpectator(Client client)
@@ -30,13 +57,15 @@ namespace CardGameServer.Managers
 
             if (Participants.Contains(client))
             {
-                Participants.Remove(client);
                 Console.WriteLine($"Removed {client.Id}|{client.Name} from the game of {CurrentGameType} as Participant");
+                ClientHandler.BroadcastServerMessage($"{client.Name} has left the game.");
+                Participants.Remove(client);
             }
 
             Spectators.Add(client);
 
             Console.WriteLine($"Spectator {client.Id}|{client.Name} added to the game of {CurrentGameType}");
+            ClientHandler.BroadcastServerMessage($"{client.Name} is now spectating.");
         }
 
         /// <summary>
@@ -55,12 +84,14 @@ namespace CardGameServer.Managers
             if (Participants.Contains(client))
             {
                 Console.WriteLine($"Removed {client.Id}|{client.Name} from the game of {CurrentGameType} as Participant");
+                ClientHandler.BroadcastServerMessage($"{client.Name} has left the game.");
                 Participants.Remove(client);
             }
 
             Spectators.Add(client);
 
             Console.WriteLine($"Spectator {client.Id}|{client.Name} added to the game of {CurrentGameType}");
+            ClientHandler.BroadcastServerMessage($"{client.Name} is now spectating.");
         }
 
         /// <summary>
@@ -74,12 +105,14 @@ namespace CardGameServer.Managers
             if (Spectators.Contains(client))
             {
                 Console.WriteLine($"Removed {client.Id}|{client.Name} from the game of {CurrentGameType} as Spectator");
+                ClientHandler.BroadcastServerMessage($"{client.Name} is no longer spectating.");
                 Spectators.Remove(client);
             }
 
             Participants.Add(client);
 
             Console.WriteLine($"Participant {client.Id}|{client.Name} added to the game of {CurrentGameType}");
+            ClientHandler.BroadcastServerMessage($"{client.Name} has joined the game.");
         }
 
         /// <summary>
@@ -98,12 +131,14 @@ namespace CardGameServer.Managers
             if (Spectators.Contains(client))
             {
                 Console.WriteLine($"Removed {client.Id}|{client.Name} from the game of {CurrentGameType} as Spectator");
+                ClientHandler.BroadcastServerMessage($"{client.Name} is no longer spectating.");
                 Spectators.Remove(client);
             }
 
             Participants.Add(client);
 
             Console.WriteLine($"Participant {client.Id}|{client.Name} added to the game of {CurrentGameType}");
+            ClientHandler.BroadcastServerMessage($"{client.Name} has joined the game.");
         }
 
         /// <summary>
@@ -122,6 +157,8 @@ namespace CardGameServer.Managers
             Console.WriteLine($"{client.Id} | {client.Name} changed the game type from {CurrentGameType} to {type}");
 
             CurrentGameType = type;
+
+            ClientHandler.Broadcast($"game:type:{type}");
         }
     }
 }

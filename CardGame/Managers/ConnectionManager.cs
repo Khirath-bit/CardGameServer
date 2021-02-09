@@ -21,6 +21,11 @@ namespace CardGame.Managers
         public static Guid ConnectionId { get; set; }
 
         /// <summary>
+        /// Gets current username
+        /// </summary>
+        public static string Name { get; set; }
+
+        /// <summary>
         /// Gets or sets the sending task
         /// </summary>
         private static Task SendingTask { get; set; }

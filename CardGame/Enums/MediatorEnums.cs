@@ -15,6 +15,9 @@ namespace CardGame.Enums
 
     public enum Operations
     {
-        AddMessage
+        AddMessage,
+        SetGameType,
+        SetMiddleCardsSwimming,
+        SetPlayerCardsSwimming
     }
 }

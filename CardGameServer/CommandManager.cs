@@ -59,7 +59,10 @@ namespace CardGameServer
             commandSegments.RemoveAt(0);
 
             if (commandSegments[0].EqualsIgnoreCase("start"))
+            {
                 Console.WriteLine($"{client} | {ClientHandler.GetName(client)} requested the game to start");
+                GameManager.StartGame();
+            }
 
             if (commandSegments[0].EqualsIgnoreCase("join"))
                 GameManager.AddParticipant(client);

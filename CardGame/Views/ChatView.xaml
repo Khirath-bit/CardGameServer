@@ -6,12 +6,22 @@
              xmlns:local="clr-namespace:CardGame.Views"
              mc:Ignorable="d" Background="Transparent">
     <Grid>
-        <ItemsControl ItemsSource="{Binding Messages}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel Orientation="Vertical"></StackPanel>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-            </ItemsControl>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="12*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <DataGrid Grid.Row="1" VerticalScrollBarVisibility="Auto" HeadersVisibility="None" ItemsSource="{Binding Messages}" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ContentControl Content="{Binding Control}"></ContentControl>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+        <TextBox x:Name="messageinput" Grid.Row="2" KeyDown="UIElement_OnKeyDown" Text="{Binding Message, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"></TextBox>
     </Grid>
 </UserControl>

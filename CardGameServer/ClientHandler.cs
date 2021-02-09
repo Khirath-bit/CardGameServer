@@ -30,6 +30,21 @@ namespace CardGameServer
         }
 
         /// <summary>
+        /// Broadcasts a message to all clients in the chat
+        /// </summary>
+        public static void BroadcastServerMessage(string message)
+        {
+            if (!ActiveClients.Any())
+                return;
+
+            foreach (var client in ActiveClients)
+            {
+                
+                client.WorkingSocket.Send(Encoding.ASCII.GetBytes($"message:SERVER:{message}"));
+            }
+        }
+
+        /// <summary>
         /// Removes a client
         /// </summary>
         public static void Remove(Client client)
@@ -39,6 +54,9 @@ namespace CardGameServer
             Broadcast($"list:connections:{ActiveClients.ToCommaSeparatedString()}");
             Broadcast($"list:participants:{GameManager.Participants.ToCommaSeparatedString()}");
             Broadcast($"list:spectators:{GameManager.Spectators.ToCommaSeparatedString()}");
+
+            if (GameManager.Participants.Count == 0)
+                GameManager.CurrentGameType = GameType.None;
         }
 
         /// <summary>

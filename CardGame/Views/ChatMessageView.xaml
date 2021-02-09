@@ -6,9 +6,10 @@
              xmlns:local="clr-namespace:CardGame.Views"
              mc:Ignorable="d" MinWidth="30">
     <Grid>
-        <Border Margin="5" Padding="5" BorderThickness="1" BorderBrush="BLue" Background="White" CornerRadius="10">
-            <TextBlock Text="{Binding Message, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+        <Border Margin="5,15,5,5" Padding="5" BorderThickness="1" BorderBrush="{Binding BorderColor, RelativeSource={RelativeSource AncestorType=UserControl}}" CornerRadius="10">
+            <TextBlock TextWrapping="Wrap" Text="{Binding Message, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
         </Border>
-        <TextBlock HorizontalAlignment="Right" VerticalAlignment="Bottom" Background="Transparent" x:Name="DateTime"></TextBlock>
+        <!--<TextBlock Text="{Binding TimeStamp, RelativeSource={RelativeSource AncestorType=UserControl}}" HorizontalAlignment="Right" VerticalAlignment="Bottom" x:Name="DateTime"></TextBlock>-->
+        <TextBlock Text="{Binding UserName, RelativeSource={RelativeSource AncestorType=UserControl}}" Foreground="DarkOrange" HorizontalAlignment="Left" VerticalAlignment="Top"></TextBlock>
     </Grid>
 </UserControl>

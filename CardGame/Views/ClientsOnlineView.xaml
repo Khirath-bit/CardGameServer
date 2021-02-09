@@ -7,10 +7,15 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <DataGrid AutoGenerateColumns="False" GridLinesVisibility="Horizontal" FontSize="15" FontFamily="Futura, Trebuchet MS, Arial, sans-serif" CanUserAddRows="False" CanUserResizeColumns="False" CanUserDeleteRows="False" HeadersVisibility="None" ItemsSource="{Binding Connections}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <DataGrid Grid.Row="0" AutoGenerateColumns="False" GridLinesVisibility="Horizontal" FontSize="15" FontFamily="Futura, Trebuchet MS, Arial, sans-serif" CanUserAddRows="False" CanUserResizeColumns="False" CanUserDeleteRows="False" HeadersVisibility="None" ItemsSource="{Binding Connections}">
            <DataGrid.Columns>
                <DataGridTextColumn Header="User" Binding="{Binding Name}"></DataGridTextColumn>
            </DataGrid.Columns>
        </DataGrid>
+        <ContentControl Grid.Row="1" Content="{Binding ChatControl}"></ContentControl>
     </Grid>
 </UserControl>

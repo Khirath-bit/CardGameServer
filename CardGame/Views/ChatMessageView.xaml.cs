@@ -23,8 +23,6 @@ namespace CardGame.Views
         public ChatMessageView()
         {
             InitializeComponent();
-
-            DateTime.Text = System.DateTime.Now.ToShortTimeString();
         }
 
         public string Message
@@ -38,5 +36,41 @@ namespace CardGame.Views
         public static readonly DependencyProperty MessageProperty =
             DependencyProperty.Register("Message", typeof(string),
                 typeof(ChatMessageView), new PropertyMetadata(""));
+
+        public string TimeStamp
+        {
+            get => (string)GetValue(TimeStampProperty);
+            set => SetValue(TimeStampProperty, value);
+        }
+
+        //  Using a DependencyProperty as the backing store for Percentage.  This 
+        //  enables animation, styling, binding, etc...
+        public static readonly DependencyProperty TimeStampProperty =
+            DependencyProperty.Register("TimeStamp", typeof(string),
+                typeof(ChatMessageView), new PropertyMetadata(""));
+
+        public string UserName
+        {
+            get => (string)GetValue(UserNameProperty);
+            set => SetValue(UserNameProperty, value);
+        }
+
+        //  Using a DependencyProperty as the backing store for Percentage.  This 
+        //  enables animation, styling, binding, etc...
+        public static readonly DependencyProperty UserNameProperty =
+            DependencyProperty.Register("UserName", typeof(string),
+                typeof(ChatMessageView), new PropertyMetadata(""));
+
+        public Brush BorderColor
+        {
+            get => (Brush)GetValue(BorderColorProperty);
+            set => SetValue(BorderColorProperty, value);
+        }
+
+        //  Using a DependencyProperty as the backing store for Percentage.  This 
+        //  enables animation, styling, binding, etc...
+        public static readonly DependencyProperty BorderColorProperty =
+            DependencyProperty.Register("BorderColor", typeof(Brush),
+                typeof(ChatMessageView), new PropertyMetadata(Brushes.Gray));
     }
 }

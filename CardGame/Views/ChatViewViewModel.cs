@@ -17,24 +17,61 @@ namespace CardGame.Views
         /// <summary>
         /// Backing field
         /// </summary>
-        private ObservableCollection<ChatMessageView> _messages;
+        private ObservableCollection<Message> _messages;
+
+        /// <summary>
+        /// Backing field
+        /// </summary>
+        private string _message;
 
         /// <summary>
         /// Creates a new instance of <see cref="ChatViewViewModel"/>
         /// </summary>
         public ChatViewViewModel()
         {
-            Messages = new ObservableCollection<ChatMessageView>();
+            Messages = new ObservableCollection<Message>();
             Mediator.RegisterEnums(Operations.AddMessage, SetMessages);
         }
 
         /// <summary>
         /// Gets or sets the messages
         /// </summary>
-        public ObservableCollection<ChatMessageView> Messages
+        public ObservableCollection<Message> Messages
         {
             get => _messages;
             set => SetField(ref _messages, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the message
+        /// </summary>
+        public string Message
+        {
+            get => _message;
+            set => SetField(ref _message, value);
+        }
+
+        /// <summary>
+        /// Sends the message
+        /// </summary>
+        public async void SendMessage()
+        {
+            var msg = Message;
+
+            await Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                Messages.Add(new Message
+                {
+                    Control = new ChatMessageView
+                    {
+                        Message = msg,
+                        TimeStamp = DateTime.Now.ToShortTimeString(),
+                        UserName = ConnectionManager.Name
+                    }
+                });
+            });
+
+            ConnectionManager.SendCommand($"message {msg}");
         }
 
         private async void SetMessages(object param)
@@ -44,10 +81,13 @@ namespace CardGame.Views
 
             await Application.Current.Dispatcher.InvokeAsync(() =>
             {
-                Messages.Add(new ChatMessageView
+                message.Control = new ChatMessageView
                 {
-                    Message = message.Value
-                });
+                    Message = message.Value,
+                    TimeStamp = message.Time,
+                    UserName = message.User
+                };
+                Messages.Add(message);
             });
         }
     }

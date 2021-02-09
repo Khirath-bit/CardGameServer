@@ -53,7 +53,7 @@ namespace GameClient
         static void Main(string[] args)
         {
 
-            var serverEp = new IPEndPoint(IPAddress.Parse("95.33.223.181"), 2222);
+            var serverEp = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 2222);
 
             var server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             server.ReceiveTimeout = -1;

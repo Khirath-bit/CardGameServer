@@ -22,18 +22,73 @@ namespace CardGame.Managers
         {
             var segments = cmd.Split(':').ToList();
 
-            if(!segments.Any())
+            if (!segments.Any())
                 return;
 
-            if(segments[0].EqualsIgnoreCase("list"))
+            if (segments[0].EqualsIgnoreCase("list"))
                 ExecuteListCommand(segments);
 
             if (segments[0].EqualsIgnoreCase("id"))
                 ConnectionManager.ConnectionId = Guid.Parse(segments[1]);
 
             if (segments[0].EqualsIgnoreCase("message"))
-                Mediator.NotifyEnumColleagues(Operations.AddMessage, new Message{User = segments[1], Value = segments[2]}) ;
+                Mediator.NotifyEnumColleagues(Operations.AddMessage, new Message { User = segments[1], Value = segments[2] });
 
+            if (segments[0].EqualsIgnoreCase("game"))
+                ExecuteGameCommand(segments);
+
+            if (segments[0].EqualsIgnoreCase("action"))
+                ExecuteActionCommand(segments);
+
+        }
+
+        /// <summary>
+        /// Executes actions commands
+        /// </summary>
+        public static void ExecuteActionCommand(List<string> segments)
+        {
+            segments.RemoveAt(0);
+
+            if (segments.Count < 1)
+                return;
+
+            if (segments[0].EqualsIgnoreCase("swimming"))
+            {
+                segments.RemoveAt(0);
+
+                if (segments.Count < 1)
+                    return;
+
+                if (segments[0].EqualsIgnoreCase("middlecards"))
+                {
+                    segments.RemoveAt(0);
+                    if (segments.Count < 1)
+                        return;
+                    Mediator.NotifyEnumColleagues(Operations.SetMiddleCardsSwimming, string.Join(":", segments));
+                }
+
+                if (segments[0].EqualsIgnoreCase("playercards"))
+                {
+                    segments.RemoveAt(0);
+                    if (segments.Count < 1)
+                        return;
+                    Mediator.NotifyEnumColleagues(Operations.SetPlayerCardsSwimming, string.Join(":", segments));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Executes game commands
+        /// </summary>
+        public static void ExecuteGameCommand(List<string> segments)
+        {
+            segments.RemoveAt(0);
+
+            if (segments.Count < 1)
+                return;
+
+            if (segments[0].EqualsIgnoreCase("type") && Enum.TryParse(segments[1], true, out GameType type))
+                Mediator.NotifyEnumColleagues(Operations.SetGameType, type);
         }
 
 
@@ -45,7 +100,7 @@ namespace CardGame.Managers
         {
             segments.RemoveAt(0);
 
-            if(segments.Count < 2)
+            if (segments.Count < 2)
                 return;
 
             if (segments[0].EqualsIgnoreCase("connections"))

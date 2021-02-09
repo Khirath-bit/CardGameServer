@@ -19,6 +19,11 @@ namespace CardGame.Views
         private ObservableCollection<Client> _connections;
 
         /// <summary>
+        /// Backing field
+        /// </summary>
+        private ChatViewViewModel _chatControl;
+
+        /// <summary>
         /// Gets or sets all connections
         /// </summary>
         public ObservableCollection<Client> Connections
@@ -28,12 +33,22 @@ namespace CardGame.Views
         }
 
         /// <summary>
+        /// Gets or sets the chat control
+        /// </summary>
+        public ChatViewViewModel ChatControl
+        {
+            get => _chatControl;
+            set => SetField(ref _chatControl, value);
+        }
+
+        /// <summary>
         /// Creates a new instance of <see cref="ClientsOnlineViewViewModel"/>
         /// </summary>
         public ClientsOnlineViewViewModel()
         {
             Mediator.RegisterEnums(ListClients.ListAllConnections, ListConnections);
             Connections = new ObservableCollection<Client>();
+            ChatControl = new ChatViewViewModel();
         }
 
         /// <summary>
