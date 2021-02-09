@@ -42,12 +42,39 @@ namespace CardGameServer
             if (segments[0].EqualsIgnoreCase("id"))
                 ClientHandler.SendMessage(client, $"id:{client}");
 
+            if(segments[0].EqualsIgnoreCase("action"))
+                ExecuteActionCommand(segments);
+
             var c = ClientHandler.GetById(client);
 
             if (segments[0].EqualsIgnoreCase("message"))
             {
                 var msg = command.Remove(0, 8);
                 ClientHandler.Broadcast($"message:{c.Name}:{msg}", client.ToString());
+            }
+        }
+
+        /// <summary>
+        /// Executes action commands
+        /// </summary>
+        /// <param name="commandSegments"></param>
+        private static void ExecuteActionCommand(List<string> commandSegments)
+        {
+            commandSegments.RemoveAt(0);
+
+            if(commandSegments.Count < 1)
+                return;
+
+            if (commandSegments[0].EqualsIgnoreCase("swimming"))
+            {
+                commandSegments.RemoveAt(0);
+
+                if (commandSegments.Count < 1)
+                    return;
+
+                if(commandSegments[0].EqualsIgnoreCase("beginnerhand"))
+                    GameManager.SwimmingGameManager.SetMiddleCards(commandSegments[1].EqualsIgnoreCase("left"));
+
             }
         }
 

@@ -58,8 +58,8 @@
             </Grid.ColumnDefinitions>
 
             <!--Beginners buttons casually hidden-->
-            <Button Visibility="{Binding IsBeginner, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">Links nehmen</Button>
-            <Button Visibility="{Binding IsBeginner, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">Rechts nehmen</Button>
+            <Button Command="{Binding TakeHandCommand}" CommandParameter="left" Visibility="{Binding IsBeginner, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">Linke Hand nehmen</Button>
+            <Button Command="{Binding TakeHandCommand}" CommandParameter="right" Visibility="{Binding IsBeginner, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">Rechte Hand nehmen</Button>
 
             <!--Turn options-->
             <Button Visibility="{Binding MiddleCardsSet, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">Schieben</Button>

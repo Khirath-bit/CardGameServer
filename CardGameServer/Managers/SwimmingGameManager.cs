@@ -78,6 +78,7 @@ namespace CardGameServer.Managers
 
             //Set middle cards and send them to the clients
             MiddleCards = cards;
+            ClientHandler.SendMessage(RoundBeginner, $"action:swimming:playercards:{JsonConvert.SerializeObject(PlayerCards.First(f => f.Key == RoundBeginner).Value)}");
             ClientHandler.Broadcast($"action:swimming:middlecards:{JsonConvert.SerializeObject(MiddleCards)}");
         }
     }

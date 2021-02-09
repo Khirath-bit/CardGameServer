@@ -22,6 +22,8 @@ namespace CardGameServer.Managers
         /// </summary>
         public static List<Client> Spectators { get; set; } = new List<Client>();
 
+        public static SwimmingGameManager SwimmingGameManager { get; set; }
+
         /// <summary>
         /// Starts the game
         /// </summary>
@@ -38,7 +40,8 @@ namespace CardGameServer.Managers
                 case GameType.None:
                     break;
                 case GameType.Schwimmen:
-                    new SwimmingGameManager().Start();
+                    SwimmingGameManager = new SwimmingGameManager();
+                    SwimmingGameManager.Start();
                     break;
                 case GameType.Durak:
                     break;

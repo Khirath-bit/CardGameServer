@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Input;
 using CardGame.Enums;
+using CardGame.Managers;
 using CardGame.Models;
 using Newtonsoft.Json;
 using Utility.MVVM;
@@ -51,6 +53,11 @@ namespace CardGame.Views
         }
 
         /// <summary>
+        /// Occurs when the user takes the beginner hand
+        /// </summary>
+        public ICommand TakeHandCommand => new RelayCommand(TakeHand);
+
+        /// <summary>
         /// Gets if any middle cards are available yet
         /// </summary>
         public bool MiddleCardsSet => MiddleCards.Any(); 
@@ -90,6 +97,18 @@ namespace CardGame.Views
             {
                 var cards = JsonConvert.DeserializeObject<List<Card>>(param.ToString());
 
+                if (cards == null)
+                {
+                    await Application.Current.Dispatcher.InvokeAsync(() =>
+                    {
+                        PlayerCards = new ObservableCollection<Card>();
+                        OnPropertyChanged("IsBeginner");
+                        OnPropertyChanged("MiddleCardsSet");
+                    });
+                    
+                    return;
+                }
+
                 await Application.Current.Dispatcher.InvokeAsync(() =>
                 {
                     PlayerCards = new ObservableCollection<Card>(cards);
@@ -100,6 +119,15 @@ namespace CardGame.Views
             {
                 return;
             }
+        }
+
+        /// <summary>
+        /// Communicates to the server which hand was taken by the user
+        /// </summary>
+        /// <param name="param"></param>
+        private void TakeHand(object param)
+        {
+            ConnectionManager.SendCommand($"action swimming beginnerhand {param}");
         }
     }
 }

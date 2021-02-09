@@ -29,6 +29,7 @@
             <ComboBox ItemsSource="{Binding GameType, Converter={extensions:EnumToCollectionConverter}}"
                       SelectedValuePath="Value"
                       DisplayMemberPath="Description"
+                      IsEnabled="{Binding Connected}"
                       SelectedValue="{Binding GameType}"/>
             <Button ToolTip="Join the game" Command="{Binding JoinGameCommand}" IsEnabled="{Binding ShowJoinButton}">
                 <Button.ContentTemplate>
