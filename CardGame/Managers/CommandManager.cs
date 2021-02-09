@@ -74,6 +74,11 @@ namespace CardGame.Managers
                         return;
                     Mediator.NotifyEnumColleagues(Operations.SetPlayerCardsSwimming, string.Join(":", segments));
                 }
+
+                if (segments[0].EqualsIgnoreCase("start"))
+                {
+                    Mediator.NotifyEnumColleagues(Operations.StartGame, null);
+                }
             }
         }
 

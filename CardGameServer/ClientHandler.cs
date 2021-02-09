@@ -11,14 +11,23 @@ namespace CardGameServer
     {
         public static List<Client> ActiveClients { get; set; } = new List<Client>();
 
+        private static bool _isSending;
+
         /// <summary>
         /// Broadcasts to all clients
         /// </summary>
         /// <param name="content"></param>
-        public static void Broadcast(string content, string id = null)
+        public static void Broadcast(string content, string id = null) //TODO: query broadcast, broadcastservermessage, message etc 
         {
             if (!ActiveClients.Any())
                 return;
+
+            while (_isSending)
+            {
+
+            }
+
+            _isSending = true;
 
             foreach (var client in ActiveClients)
             {
@@ -27,6 +36,8 @@ namespace CardGameServer
 
                 client.WorkingSocket.Send(Encoding.ASCII.GetBytes(content));
             }
+
+            _isSending = false;
         }
 
         /// <summary>
@@ -37,11 +48,20 @@ namespace CardGameServer
             if (!ActiveClients.Any())
                 return;
 
+            while (_isSending)
+            {
+
+            }
+
+            _isSending = true;
+
             foreach (var client in ActiveClients)
             {
                 
                 client.WorkingSocket.Send(Encoding.ASCII.GetBytes($"message:SERVER:{message}"));
             }
+
+            _isSending = false;
         }
 
         /// <summary>
@@ -49,6 +69,13 @@ namespace CardGameServer
         /// </summary>
         public static void Remove(Client client)
         {
+            while (_isSending)
+            {
+
+            }
+
+            _isSending = true;
+
             ActiveClients.Remove(client);
 
             Broadcast($"list:connections:{ActiveClients.ToCommaSeparatedString()}");
@@ -57,6 +84,8 @@ namespace CardGameServer
 
             if (GameManager.Participants.Count == 0)
                 GameManager.CurrentGameType = GameType.None;
+
+            _isSending = false;
         }
 
         /// <summary>
@@ -109,6 +138,13 @@ namespace CardGameServer
         /// </summary>
         public static void SendMessage(Guid id, string message)
         {
+            while (_isSending)
+            {
+
+            }
+
+            _isSending = true;
+
             if (!ActiveClients.Exists(a => a.Id == id))
                 return;
 
@@ -118,6 +154,8 @@ namespace CardGameServer
                 Console.WriteLine($"Send message {message} to {client.Name}");
 
             client.WorkingSocket.Send(Encoding.ASCII.GetBytes(message));
+
+            _isSending = false;
         }
     }
 }

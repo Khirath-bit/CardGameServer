@@ -18,6 +18,7 @@ namespace CardGame.Enums
         AddMessage,
         SetGameType,
         SetMiddleCardsSwimming,
-        SetPlayerCardsSwimming
+        SetPlayerCardsSwimming,
+        StartGame
     }
 }

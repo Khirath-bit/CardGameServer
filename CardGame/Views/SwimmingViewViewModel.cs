@@ -31,7 +31,8 @@ namespace CardGame.Views
         {
             Mediator.RegisterEnums(Operations.SetMiddleCardsSwimming, SetMiddleCards);
             Mediator.RegisterEnums(Operations.SetPlayerCardsSwimming, SetPlayerCards);
-            MiddleCards = new ObservableCollection<Card>();
+            Mediator.RegisterEnums(Operations.StartGame, Init);
+            Init();
         }
 
         /// <summary>
@@ -119,6 +120,19 @@ namespace CardGame.Views
             {
                 return;
             }
+        }
+
+        /// <summary>
+        /// Init the game
+        /// </summary>
+        private async void Init(object param = null)
+        {
+            await Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                MiddleCards = new ObservableCollection<Card>();
+                OnPropertyChanged("MiddleCardsSet");
+                OnPropertyChanged("IsBeginner");
+            });
         }
 
         /// <summary>

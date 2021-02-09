@@ -22,6 +22,9 @@ namespace CardGameServer.Managers
         /// </summary>
         public static List<Client> Spectators { get; set; } = new List<Client>();
 
+        /// <summary>
+        /// Gets or sets the swimming manager
+        /// </summary>
         public static SwimmingGameManager SwimmingGameManager { get; set; }
 
         /// <summary>

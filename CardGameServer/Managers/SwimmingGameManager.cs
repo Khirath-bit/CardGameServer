@@ -42,7 +42,9 @@ namespace CardGameServer.Managers
         /// </summary>
         public void Start()
         {
-            ClientHandler.BroadcastServerMessage($"Die Partie 'Schwimmen' hat begonnen");
+            //ClientHandler.BroadcastServerMessage($"Die Partie 'Schwimmen' hat begonnen");
+
+            ClientHandler.Broadcast("action:swimming:start");
 
             //Update round beginner
             var currentId = RoundBeginner == Guid.Empty ? 0 : GameManager.Participants.IndexOf(GameManager.Participants.First(f => f.Id == RoundBeginner));
@@ -65,14 +67,14 @@ namespace CardGameServer.Managers
         {
             var cards = new List<Card>();
 
-            if (left)
+            if (!left)
             {
                 cards = PlayerCards.First(f => f.Key == RoundBeginner).Value.Take(3).ToList();
                 PlayerCards.First(f => f.Key == RoundBeginner).Value.RemoveRange(0, 3);
             }
             else
             {
-                cards = PlayerCards.First(f => f.Key == RoundBeginner).Value.Take(3).ToList();
+                cards = PlayerCards.First(f => f.Key == RoundBeginner).Value.TakeLast(3).ToList();
                 PlayerCards.First(f => f.Key == RoundBeginner).Value.RemoveRange(3, 3);
             }
 
