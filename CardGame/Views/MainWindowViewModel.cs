@@ -167,7 +167,7 @@ namespace CardGame.Views
             if (Connected)
                 return;
 
-            Connected = ConnectionManager.Connect();
+            Connected = await ConnectionManager.Connect();
 
             if (!Connected)
                 return;

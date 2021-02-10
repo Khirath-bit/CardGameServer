@@ -20,25 +20,34 @@ namespace CardGame.Managers
         /// </summary>
         public static void ExecuteCommand(string cmd)
         {
-            var segments = cmd.Split(':').ToList();
+            try
+            {
+                var segments = cmd.Split(':').ToList();
 
-            if (!segments.Any())
-                return;
+                if (!segments.Any())
+                    return;
 
-            if (segments[0].EqualsIgnoreCase("list"))
-                ExecuteListCommand(segments);
+                if (segments[0].EqualsIgnoreCase("list"))
+                    ExecuteListCommand(segments);
 
-            if (segments[0].EqualsIgnoreCase("id"))
-                ConnectionManager.ConnectionId = Guid.Parse(segments[1]);
+                if (segments[0].EqualsIgnoreCase("id"))
+                    ConnectionManager.ConnectionId = Guid.Parse(segments[1]);
 
-            if (segments[0].EqualsIgnoreCase("message"))
-                Mediator.NotifyEnumColleagues(Operations.AddMessage, new Message { User = segments[1], Value = segments[2] });
+                if (segments[0].EqualsIgnoreCase("message"))
+                    Mediator.NotifyEnumColleagues(Operations.AddMessage, new Message { User = segments[1], Value = segments[2] });
 
-            if (segments[0].EqualsIgnoreCase("game"))
-                ExecuteGameCommand(segments);
+                if (segments[0].EqualsIgnoreCase("game"))
+                    ExecuteGameCommand(segments);
 
-            if (segments[0].EqualsIgnoreCase("action"))
-                ExecuteActionCommand(segments);
+                if (segments[0].EqualsIgnoreCase("action"))
+                    ExecuteActionCommand(segments);
+            }
+            catch (Exception e)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.WriteLine(e);
+                Console.ForegroundColor = ConsoleColor.Gray;
+            }
 
         }
 
@@ -77,8 +86,19 @@ namespace CardGame.Managers
 
                 if (segments[0].EqualsIgnoreCase("start"))
                 {
-                    Mediator.NotifyEnumColleagues(Operations.StartGame, null);
+                    Mediator.NotifyEnumColleagues(Operations.StartGameSwimming, null);
                 }
+
+                if (segments[0].EqualsIgnoreCase("infotext"))
+                {
+                    segments.RemoveAt(0);
+                    if (segments.Count < 1)
+                        return;
+                    Mediator.NotifyEnumColleagues(Operations.InfotextSwimming, segments[0]);
+                }
+
+                if (segments[0].EqualsIgnoreCase("onturn"))
+                    Mediator.NotifyEnumColleagues(Operations.OnturnSwimming, null);
             }
         }
 

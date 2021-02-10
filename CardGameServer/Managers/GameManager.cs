@@ -25,7 +25,7 @@ namespace CardGameServer.Managers
         /// <summary>
         /// Gets or sets the swimming manager
         /// </summary>
-        public static SwimmingGameManager SwimmingGameManager { get; set; }
+        public static SwimmingGameManager SwimmingGameManager { get; set; } = new SwimmingGameManager();
 
         /// <summary>
         /// Starts the game
@@ -43,7 +43,6 @@ namespace CardGameServer.Managers
                 case GameType.None:
                     break;
                 case GameType.Schwimmen:
-                    SwimmingGameManager = new SwimmingGameManager();
                     SwimmingGameManager.Start();
                     break;
                 case GameType.Durak:

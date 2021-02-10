@@ -19,6 +19,8 @@ namespace CardGame.Enums
         SetGameType,
         SetMiddleCardsSwimming,
         SetPlayerCardsSwimming,
-        StartGame
+        StartGameSwimming,
+        InfotextSwimming,
+        OnturnSwimming
     }
 }

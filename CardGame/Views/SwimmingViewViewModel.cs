@@ -25,13 +25,25 @@ namespace CardGame.Views
         private ObservableCollection<Card> _playerCards;
 
         /// <summary>
+        /// Backing field
+        /// </summary>
+        private string _informationText;
+
+        /// <summary>
+        /// Backing field
+        /// </summary>
+        private bool _isOnTurn;
+
+        /// <summary>
         /// Creates a new instance of <see cref="SwimmingViewViewModel"/>
         /// </summary>
         public SwimmingViewViewModel()
         {
             Mediator.RegisterEnums(Operations.SetMiddleCardsSwimming, SetMiddleCards);
             Mediator.RegisterEnums(Operations.SetPlayerCardsSwimming, SetPlayerCards);
-            Mediator.RegisterEnums(Operations.StartGame, Init);
+            Mediator.RegisterEnums(Operations.StartGameSwimming, Init);
+            Mediator.RegisterEnums(Operations.InfotextSwimming, SetInfoText);
+            Mediator.RegisterEnums(Operations.OnturnSwimming, OnTurn);
             Init();
         }
 
@@ -41,7 +53,12 @@ namespace CardGame.Views
         public ObservableCollection<Card> MiddleCards
         {
             get => _middleCards;
-            set => SetField(ref _middleCards, value);
+            set
+            {
+                SetField(ref _middleCards, value);
+                OnPropertyChanged("MiddleCardsSet");
+                InformationText = "";
+            }
         }
 
         /// <summary>
@@ -50,7 +67,14 @@ namespace CardGame.Views
         public ObservableCollection<Card> PlayerCards
         {
             get => _playerCards;
-            set => SetField(ref _playerCards, value);
+            set
+            {
+                SetField(ref _playerCards, value);
+                OnPropertyChanged("IsBeginner");
+                OnPropertyChanged("MiddleCardsSet");
+                if (IsBeginner)
+                    InformationText = "Du darfst beginnen!";
+            } 
         }
 
         /// <summary>
@@ -61,12 +85,30 @@ namespace CardGame.Views
         /// <summary>
         /// Gets if any middle cards are available yet
         /// </summary>
-        public bool MiddleCardsSet => MiddleCards.Any(); 
+        public bool MiddleCardsSet => MiddleCards.Any();
+
+        /// <summary>
+        /// Gets or sets if the user is on turn
+        /// </summary>
+        public bool IsOnTurn
+        {
+            get => _isOnTurn;
+            set => SetField(ref _isOnTurn, value);
+        }
 
         /// <summary>
         /// Gets if the player is the beginner in this turn
         /// </summary>
         public bool IsBeginner => PlayerCards?.Count == 6;
+
+        /// <summary>
+        /// Gets or sets the information text
+        /// </summary>
+        public string InformationText
+        {
+            get => _informationText;
+            set => SetField(ref _informationText, value);
+        }
 
         /// <summary>
         /// Sets the middle cards
@@ -80,7 +122,7 @@ namespace CardGame.Views
                 await Application.Current.Dispatcher.InvokeAsync(() =>
                 {
                     MiddleCards = new ObservableCollection<Card>(cards);
-                    OnPropertyChanged("MiddleCardsSet");
+                    
                 });
             }
             catch (Exception e)
@@ -103,8 +145,6 @@ namespace CardGame.Views
                     await Application.Current.Dispatcher.InvokeAsync(() =>
                     {
                         PlayerCards = new ObservableCollection<Card>();
-                        OnPropertyChanged("IsBeginner");
-                        OnPropertyChanged("MiddleCardsSet");
                     });
                     
                     return;
@@ -113,7 +153,6 @@ namespace CardGame.Views
                 await Application.Current.Dispatcher.InvokeAsync(() =>
                 {
                     PlayerCards = new ObservableCollection<Card>(cards);
-                    OnPropertyChanged("IsBeginner");
                 });
             }
             catch (Exception e)
@@ -130,8 +169,10 @@ namespace CardGame.Views
             await Application.Current.Dispatcher.InvokeAsync(() =>
             {
                 MiddleCards = new ObservableCollection<Card>();
+                PlayerCards = new ObservableCollection<Card>();
                 OnPropertyChanged("MiddleCardsSet");
                 OnPropertyChanged("IsBeginner");
+                InformationText = "Schwimmen!";
             });
         }
 
@@ -142,6 +183,22 @@ namespace CardGame.Views
         private void TakeHand(object param)
         {
             ConnectionManager.SendCommand($"action swimming beginnerhand {param}");
+        }
+
+        /// <summary>
+        /// Enables turn option controls
+        /// </summary>
+        private async void OnTurn(object param)
+        {
+            await Application.Current.Dispatcher.InvokeAsync(() => { IsOnTurn = true; });
+        }
+
+        /// <summary>
+        /// Sets the infotext
+        /// </summary>
+        private async void SetInfoText(object text)
+        {
+            await Application.Current.Dispatcher.InvokeAsync(() => { InformationText = text.ToString(); });
         }
     }
 }

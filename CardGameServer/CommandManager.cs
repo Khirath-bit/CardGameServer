@@ -15,42 +15,51 @@ namespace CardGameServer
         /// </summary>
         public static void Execute(Guid client, string command)
         {
-            if (Debug)
+            try
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"{ClientHandler.GetById(client).Name} sent {command}");
-                Console.ForegroundColor = ConsoleColor.Gray;
+                if (Debug)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine($"{ClientHandler.GetById(client).Name} sent {command}");
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                }
+
+                var segments = command.Split(' ').ToList();
+
+                if (segments.Count < 1)
+                    return;
+
+                if (segments[0].EqualsIgnoreCase("debug"))
+                    Debug = !Debug;
+
+                if (segments[0].EqualsIgnoreCase("setname"))
+                    ClientHandler.SetName(client, segments[1]);
+
+                if (segments[0].EqualsIgnoreCase("game"))
+                    ExecuteGameCommand(client, segments);
+
+                if (segments[0].EqualsIgnoreCase("list"))
+                    ExecuteListCommand(client, segments);
+
+                if (segments[0].EqualsIgnoreCase("id"))
+                    ClientHandler.SendMessage(client, $"id:{client}");
+
+                if (segments[0].EqualsIgnoreCase("action"))
+                    ExecuteActionCommand(segments);
+
+                var c = ClientHandler.GetById(client);
+
+                if (segments[0].EqualsIgnoreCase("message"))
+                {
+                    var msg = command.Remove(0, 8);
+                    ClientHandler.Broadcast($"message:{c.Name}:{msg}", client.ToString());
+                }
             }
-
-            var segments = command.Split(' ').ToList();
-
-            if (segments.Count < 1)
-                return;
-
-            if (segments[0].EqualsIgnoreCase("debug"))
-                Debug = !Debug;
-
-            if (segments[0].EqualsIgnoreCase("setname"))
-                ClientHandler.SetName(client, segments[1]);
-
-            if (segments[0].EqualsIgnoreCase("game"))
-                ExecuteGameCommand(client, segments);
-
-            if (segments[0].EqualsIgnoreCase("list"))
-                ExecuteListCommand(client, segments);
-
-            if (segments[0].EqualsIgnoreCase("id"))
-                ClientHandler.SendMessage(client, $"id:{client}");
-
-            if(segments[0].EqualsIgnoreCase("action"))
-                ExecuteActionCommand(segments);
-
-            var c = ClientHandler.GetById(client);
-
-            if (segments[0].EqualsIgnoreCase("message"))
+            catch (Exception e)
             {
-                var msg = command.Remove(0, 8);
-                ClientHandler.Broadcast($"message:{c.Name}:{msg}", client.ToString());
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.WriteLine(e);
+                Console.ForegroundColor = ConsoleColor.Gray;
             }
         }
 

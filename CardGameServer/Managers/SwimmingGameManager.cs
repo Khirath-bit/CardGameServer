@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using CardGameServer.DataObjects;
 using Newtonsoft.Json;
 
@@ -12,14 +13,14 @@ namespace CardGameServer.Managers
         /// <summary>
         /// Contains the card manager
         /// </summary>
-        private readonly CardManager _cardManager;
+        private CardManager _cardManager;
 
         /// <summary>
         /// Creates a new instance of <see cref="SwimmingGameManager"/>
         /// </summary>
         public SwimmingGameManager()
         {
-            _cardManager = new CardManager(GameType.Schwimmen);
+            
         }
 
         /// <summary>
@@ -38,12 +39,23 @@ namespace CardGameServer.Managers
         public Guid RoundBeginner { get; set; }
 
         /// <summary>
+        /// Gets or sets the player that is allowed to do its turn
+        /// </summary>
+        public Guid CurrentTurn { get; set; }
+
+        /// <summary>
         /// Starts the game
         /// </summary>
         public void Start()
         {
-            //ClientHandler.BroadcastServerMessage($"Die Partie 'Schwimmen' hat begonnen");
+            //Reset everything
+            _cardManager = new CardManager(GameType.Schwimmen);
+            PlayerCards = new Dictionary<Guid, List<Card>>();
+            //RoundBeginner = Guid.Empty;
+            CurrentTurn = Guid.Empty;
+            MiddleCards = new List<Card>();
 
+            //Update clients
             ClientHandler.Broadcast("action:swimming:start");
 
             //Update round beginner
@@ -82,6 +94,16 @@ namespace CardGameServer.Managers
             MiddleCards = cards;
             ClientHandler.SendMessage(RoundBeginner, $"action:swimming:playercards:{JsonConvert.SerializeObject(PlayerCards.First(f => f.Key == RoundBeginner).Value)}");
             ClientHandler.Broadcast($"action:swimming:middlecards:{JsonConvert.SerializeObject(MiddleCards)}");
+            
+            //Set next player
+            var beginnerPlayer = GameManager.Participants.First(f => f.Id == RoundBeginner);
+            var nextIndex = GameManager.Participants.IndexOf(beginnerPlayer) + 1;
+            if (nextIndex >= GameManager.Participants.Count)
+                nextIndex = 0;
+            CurrentTurn = GameManager.Participants[nextIndex].Id;
+            ClientHandler.SendMessage(CurrentTurn, "action:swimming:onturn");
+            Thread.Sleep(50);
+            ClientHandler.Broadcast($"action:swimming:infotext:{GameManager.Participants[nextIndex].Name} ist am Zug.");
         }
     }
 }

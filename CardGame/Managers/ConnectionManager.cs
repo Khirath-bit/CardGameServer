@@ -33,9 +33,9 @@ namespace CardGame.Managers
         /// <summary>
         /// Connects this client to the game server
         /// </summary>
-        public static bool Connect()
+        public static async Task<bool> Connect()
         {
-            var serverEp = new IPEndPoint(IPAddress.Parse("95.33.221.26"), 2222);
+            var serverEp = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 2222);
 
             Server =
                 new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp) {ReceiveTimeout = -1};
@@ -43,7 +43,7 @@ namespace CardGame.Managers
             // Connect to the server.
             try
             {
-                Server.Connect(serverEp);
+                await Server.ConnectAsync(serverEp);
             }
             catch (Exception)
             {

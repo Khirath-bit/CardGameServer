@@ -48,7 +48,7 @@ namespace CardGameServer.Managers
 
             var count = (int)cardAmount / 4;
 
-            for (var i = 0; i < count; i++)
+            for (var i = _names.Count-1; i > _names.Count - 1-count; i--)
             {
                 Cards.Add(new Card { CardSigns = CardSigns.Herz, Description = _names.Keys.ElementAt(i), Value = _names.Values.ElementAt(i), Img = "CardImages/" + (int.TryParse(_names.Keys.ElementAt(i), out int v) ? v + "H.jpg" : _names.Keys.ElementAt(i)[0] + "H.jpg") });
                 Cards.Add(new Card { CardSigns = CardSigns.Karo, Description = _names.Keys.ElementAt(i), Value = _names.Values.ElementAt(i), Img = "CardImages/" + (int.TryParse(_names.Keys.ElementAt(i), out int v2) ? v2 + "D.jpg" : _names.Keys.ElementAt(i)[0] + "D.jpg") });

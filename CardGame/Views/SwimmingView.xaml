@@ -7,9 +7,9 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <Grid.Background>
+        <!--<Grid.Background>
             <ImageBrush ImageSource="/CardImages/BG.jpg" Stretch="UniformToFill"></ImageBrush>
-        </Grid.Background>
+        </Grid.Background>-->
         <Grid.RowDefinitions>
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
@@ -62,11 +62,15 @@
             <Button Command="{Binding TakeHandCommand}" CommandParameter="right" Visibility="{Binding IsBeginner, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">Rechte Hand nehmen</Button>
 
             <!--Turn options-->
-            <Button Visibility="{Binding MiddleCardsSet, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">Schieben</Button>
-            <Button Visibility="{Binding MiddleCardsSet, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">Passen</Button>
+            <TextBlock Grid.Row="2" Grid.Column="1" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="14">Deine Karten</TextBlock>
+            <StackPanel Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" Orientation="Horizontal">
+                <Button IsEnabled="{Binding IsOnTurn}" FontSize="15" Visibility="{Binding MiddleCardsSet, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">Schieben</Button>
+                <Button IsEnabled="{Binding IsOnTurn}" FontSize="15" Margin="5" Visibility="{Binding MiddleCardsSet, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">Passen</Button>
+                <Button IsEnabled="{Binding IsOnTurn}" FontSize="15" Visibility="{Binding MiddleCardsSet, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">Alle nehmen</Button>
+            </StackPanel>
 
             <!--Info box-->
-            <TextBlock FontSize="20" Foreground="White" Background="Transparent" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" VerticalAlignment="Center" HorizontalAlignment="Center">Du darfst beginnen!</TextBlock>
+            <TextBlock Text="{Binding InformationText}" FontSize="20" Foreground="White" Background="Transparent" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
         </Grid>
     </Grid>
 </UserControl>
