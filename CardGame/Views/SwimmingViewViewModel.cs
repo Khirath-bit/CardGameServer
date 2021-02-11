@@ -72,6 +72,7 @@ namespace CardGame.Views
                 SetField(ref _playerCards, value);
                 OnPropertyChanged("IsBeginner");
                 OnPropertyChanged("MiddleCardsSet");
+                OnPropertyChanged("PlayerCardsSet");
                 if (IsBeginner)
                     InformationText = "Du darfst beginnen!";
             } 
@@ -83,9 +84,24 @@ namespace CardGame.Views
         public ICommand TakeHandCommand => new RelayCommand(TakeHand);
 
         /// <summary>
+        /// Occurs when the user takes all cards
+        /// </summary>
+        public ICommand TakeAllCommand => new DelegateCommand(TakeAll);
+
+        /// <summary>
+        /// Occurs when the user skips
+        /// </summary>
+        public ICommand SkipCommand => new DelegateCommand(SkipTurn);
+
+        /// <summary>
         /// Gets if any middle cards are available yet
         /// </summary>
         public bool MiddleCardsSet => MiddleCards.Any();
+
+        /// <summary>
+        /// Gets if any player cards are set
+        /// </summary>
+        public bool PlayerCardsSet => PlayerCards.Any();
 
         /// <summary>
         /// Gets or sets if the user is on turn
@@ -199,6 +215,29 @@ namespace CardGame.Views
         private async void SetInfoText(object text)
         {
             await Application.Current.Dispatcher.InvokeAsync(() => { InformationText = text.ToString(); });
+        }
+
+        /// <summary>
+        /// Takes all middle cards
+        /// </summary>
+        private async void TakeAll()
+        {
+            var turn = new SwimmingTurn();
+            turn.HandCards = MiddleCards.ToList();
+            await Application.Current.Dispatcher.InvokeAsync(() => { PlayerCards = MiddleCards; });
+            
+            ConnectionManager.SendCommand($"action swimming turn {JsonConvert.SerializeObject(turn)}");
+        }
+
+        /// <summary>
+        /// Skips this turn
+        /// </summary>
+        private void SkipTurn()
+        {
+            var turn = new SwimmingTurn();
+            turn.Skip = true;
+
+            ConnectionManager.SendCommand($"action swimming turn {JsonConvert.SerializeObject(turn)}");
         }
     }
 }

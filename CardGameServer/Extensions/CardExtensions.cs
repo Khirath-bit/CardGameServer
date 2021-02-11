@@ -24,13 +24,29 @@ namespace CardGameServer.Extensions
             }
         }
 
-        public static int CountValues(this ObservableCollection<Card> cards)
+        public static double CountValues(this List<Card> cards)
         {
-            var sum = 0;
+            //3 equal
+            if (cards.All(a => a.Description == cards.First().Description))
+                return cards.First().Value == 11 ? 33 : 30.5;
 
-            cards.ToList().ForEach(c => sum += c.Value);
+        
 
-            return sum;
+            var vals = new Dictionary<CardSigns, int>();
+
+            vals.Add(CardSigns.Herz, cards.Count(f => f.CardSigns == CardSigns.Herz));
+            vals.Add(CardSigns.Karo, cards.Count(f => f.CardSigns == CardSigns.Karo));
+            vals.Add(CardSigns.Pik, cards.Count(f => f.CardSigns == CardSigns.Pik));
+            vals.Add(CardSigns.Kreuz, cards.Count(f => f.CardSigns == CardSigns.Kreuz));
+
+            if (vals.Max(m => m.Value) == 1) //Wenn alles unterschiedlich ist dann gewinnt höchste karte
+            {
+                return cards.Max(m => m.Value);
+            }
+
+            var mostUsedSign = vals.First(f => f.Value == vals.Max(m => m.Value)).Key; //get most used card sign
+
+            return cards.Where(w => w.CardSigns == mostUsedSign).Sum(s => s.Value); //sum values
         }
     }
 }

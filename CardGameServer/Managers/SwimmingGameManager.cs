@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using CardGameServer.DataObjects;
+using CardGameServer.Extensions;
 using Newtonsoft.Json;
 
 namespace CardGameServer.Managers
@@ -95,6 +96,82 @@ namespace CardGameServer.Managers
             ClientHandler.SendMessage(RoundBeginner, $"action:swimming:playercards:{JsonConvert.SerializeObject(PlayerCards.First(f => f.Key == RoundBeginner).Value)}");
             ClientHandler.Broadcast($"action:swimming:middlecards:{JsonConvert.SerializeObject(MiddleCards)}");
             
+            //Sets the next turn
+            SetNextTurn();
+        }
+
+        /// <summary>
+        /// Current players turn
+        /// </summary>
+        public void MakeTurn(Guid playerId, string jsonTurn)
+        {
+            if(CurrentTurn != playerId)
+                return;
+
+            try
+            {
+                var data = JsonConvert.DeserializeObject<SwimmingTurn>(jsonTurn);
+
+                if (data.Skip)
+                {
+                    SetNextTurn();
+                    return;
+                }
+
+                //Swap cards
+                var diff = PlayerCards.First(w => w.Key == playerId).Value.Where(v => !data.HandCards.Contains(v)).ToList();
+                MiddleCards.AddRange(diff);
+                var middleDiff = MiddleCards.Where(w => 
+                    data.HandCards.Exists(e => e.Show == w.Show 
+                                               && e.Value == w.Value && e.CardSigns == w.CardSigns 
+                                               && e.Description == w.Description)).ToList();
+                middleDiff.ForEach(f => MiddleCards.Remove(f));
+                PlayerCards[CurrentTurn] = data.HandCards;
+
+                if (CheckForWin())
+                {
+                    return;
+                }
+
+                if(diff.Any())
+                    ClientHandler.Broadcast($"action:swimming:middlecards:{JsonConvert.SerializeObject(MiddleCards)}");
+
+                SetNextTurn();
+            }
+            catch (Exception e)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.WriteLine($"Invalid json turn data {e}");
+                Console.ForegroundColor = ConsoleColor.Gray;
+            }
+        }
+
+        /// <summary>
+        /// Gets if current player has won yet
+        /// </summary>
+        private bool CheckForWin()
+        {
+            var points = PlayerCards[CurrentTurn].CountValues();
+
+            if (points == 33)
+            {
+                ClientHandler.Broadcast($"action:swimming:infotext:{GameManager.Participants.First(f => f.Id == CurrentTurn).Name} hat einen BLITZ!");
+                return true;
+            }
+            else if (points == 31)
+            {
+                ClientHandler.Broadcast($"action:swimming:infotext:{GameManager.Participants.First(f => f.Id == CurrentTurn).Name} hat Knack!");
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Sets the next turn
+        /// </summary>
+        private void SetNextTurn()
+        {
             //Set next player
             var beginnerPlayer = GameManager.Participants.First(f => f.Id == RoundBeginner);
             var nextIndex = GameManager.Participants.IndexOf(beginnerPlayer) + 1;
@@ -102,7 +179,7 @@ namespace CardGameServer.Managers
                 nextIndex = 0;
             CurrentTurn = GameManager.Participants[nextIndex].Id;
             ClientHandler.SendMessage(CurrentTurn, "action:swimming:onturn");
-            Thread.Sleep(50);
+            Thread.Sleep(100);
             ClientHandler.Broadcast($"action:swimming:infotext:{GameManager.Participants[nextIndex].Name} ist am Zug.");
         }
     }

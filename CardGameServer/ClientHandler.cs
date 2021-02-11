@@ -34,7 +34,7 @@ namespace CardGameServer
                 if (Guid.TryParse(id, out var filter) && client.Id == filter)
                     continue;
 
-                client.WorkingSocket.Send(Encoding.ASCII.GetBytes(content));
+                client.WorkingSocket.Send(Encoding.UTF8.GetBytes(content));
             }
 
             _isSending = false;
@@ -58,7 +58,7 @@ namespace CardGameServer
             foreach (var client in ActiveClients)
             {
                 
-                client.WorkingSocket.Send(Encoding.ASCII.GetBytes($"message:SERVER:{message}"));
+                client.WorkingSocket.Send(Encoding.UTF8.GetBytes($"message:SERVER:{message}"));
             }
 
             _isSending = false;
@@ -153,7 +153,7 @@ namespace CardGameServer
             if(CommandManager.Debug)
                 Console.WriteLine($"Send message {message} to {client.Name}");
 
-            client.WorkingSocket.Send(Encoding.ASCII.GetBytes(message));
+            client.WorkingSocket.Send(Encoding.UTF8.GetBytes(message));
 
             _isSending = false;
         }

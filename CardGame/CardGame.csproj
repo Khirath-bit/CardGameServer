@@ -181,6 +181,7 @@
     <Compile Include="Models\Card.cs" />
     <Compile Include="Models\Client.cs" />
     <Compile Include="Models\Message.cs" />
+    <Compile Include="Models\SwimmingTurn.cs" />
     <Compile Include="Models\ValueDescription.cs" />
     <Compile Include="Views\ChatMessageView.xaml.cs">
       <DependentUpon>ChatMessageView.xaml</DependentUpon>

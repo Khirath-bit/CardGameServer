@@ -68,7 +68,7 @@ namespace CardGameServer
                 {
                     while (true)
                     {
-                        var response = new byte[1024];
+                        var response = new byte[2048];
                         var received = client.WorkingSocket.Receive(response);
                         if (received == 0)
                         {
@@ -78,8 +78,8 @@ namespace CardGameServer
                         }
 
                         var respBytesList = new List<byte>(response);
-                        respBytesList.RemoveRange(received, 1024 - received); // truncate zero end
-                        CommandManager.Execute(client.Id, Encoding.ASCII.GetString(respBytesList.ToArray()));
+                        respBytesList.RemoveRange(received, 2048 - received); // truncate zero end
+                        CommandManager.Execute(client.Id, Encoding.UTF8.GetString(respBytesList.ToArray()));
                     }
                 }
                 catch (Exception e)

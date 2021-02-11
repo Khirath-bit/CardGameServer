@@ -45,7 +45,7 @@ namespace CardGameServer
                     ClientHandler.SendMessage(client, $"id:{client}");
 
                 if (segments[0].EqualsIgnoreCase("action"))
-                    ExecuteActionCommand(segments);
+                    ExecuteActionCommand(segments, client);
 
                 var c = ClientHandler.GetById(client);
 
@@ -67,7 +67,7 @@ namespace CardGameServer
         /// Executes action commands
         /// </summary>
         /// <param name="commandSegments"></param>
-        private static void ExecuteActionCommand(List<string> commandSegments)
+        private static void ExecuteActionCommand(List<string> commandSegments, Guid client)
         {
             commandSegments.RemoveAt(0);
 
@@ -84,6 +84,15 @@ namespace CardGameServer
                 if(commandSegments[0].EqualsIgnoreCase("beginnerhand"))
                     GameManager.SwimmingGameManager.SetMiddleCards(commandSegments[1].EqualsIgnoreCase("left"));
 
+                if (commandSegments[0].EqualsIgnoreCase("turn"))
+                {
+                    commandSegments.RemoveAt(0);
+
+                    if (commandSegments.Count < 1)
+                        return;
+
+                    GameManager.SwimmingGameManager.MakeTurn(client, string.Join(" ", commandSegments));
+                }
             }
         }
 

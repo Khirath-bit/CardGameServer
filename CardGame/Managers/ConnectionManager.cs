@@ -68,7 +68,7 @@ namespace CardGame.Managers
             if(Server == null || !Server.Connected)
                 return;
 
-            const int maxMessageSize = 1024;
+            const int maxMessageSize = 2048;
             byte[] response;
             int received;
             Task.Run(() =>
@@ -85,7 +85,7 @@ namespace CardGame.Managers
 
                     var respBytesList = new List<byte>(response);
                     respBytesList.RemoveRange(received, maxMessageSize - received); // truncate zero end
-                    CommandManager.ExecuteCommand(Encoding.ASCII.GetString(respBytesList.ToArray()));
+                    CommandManager.ExecuteCommand(Encoding.UTF8.GetString(respBytesList.ToArray()));
                 }
             });
         }
@@ -100,7 +100,7 @@ namespace CardGame.Managers
 
             try
             {
-                Server.Send(Encoding.ASCII.GetBytes(command));
+                Server.Send(Encoding.UTF8.GetBytes(command));
             }
             catch (Exception e)
             {
