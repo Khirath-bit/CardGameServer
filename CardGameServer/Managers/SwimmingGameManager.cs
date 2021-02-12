@@ -45,6 +45,11 @@ namespace CardGameServer.Managers
         public Guid CurrentTurn { get; set; }
 
         /// <summary>
+        /// Gets or sets the play who called pass
+        /// </summary>
+        public Guid CalledPass { get; set; }
+
+        /// <summary>
         /// Starts the game
         /// </summary>
         public void Start()
@@ -112,6 +117,15 @@ namespace CardGameServer.Managers
             {
                 var data = JsonConvert.DeserializeObject<SwimmingTurn>(jsonTurn);
 
+                if (data.Pass)
+                {
+                    if (CalledPass != Guid.Empty)
+                        CalledPass = playerId;
+
+                    SetNextTurn();
+                    return;
+                }
+
                 if (data.Skip)
                 {
                     SetNextTurn();
@@ -178,6 +192,13 @@ namespace CardGameServer.Managers
             if (nextIndex >= GameManager.Participants.Count)
                 nextIndex = 0;
             CurrentTurn = GameManager.Participants[nextIndex].Id;
+
+            if (CalledPass == CurrentTurn)
+            {
+                ClientHandler.Broadcast($"action:swimming:infotext:Das spiel ist vorbei.");
+                return;
+            }
+
             ClientHandler.SendMessage(CurrentTurn, "action:swimming:onturn");
             Thread.Sleep(100);
             ClientHandler.Broadcast($"action:swimming:infotext:{GameManager.Participants[nextIndex].Name} ist am Zug.");

@@ -94,6 +94,11 @@ namespace CardGame.Views
         public ICommand SkipCommand => new DelegateCommand(SkipTurn);
 
         /// <summary>
+        /// Occurs when the user passes
+        /// </summary>
+        public ICommand PassCommand => new DelegateCommand(PassTurn);
+
+        /// <summary>
         /// Gets if any middle cards are available yet
         /// </summary>
         public bool MiddleCardsSet => MiddleCards.Any();
@@ -237,6 +242,13 @@ namespace CardGame.Views
             var turn = new SwimmingTurn();
             turn.Skip = true;
 
+            ConnectionManager.SendCommand($"action swimming turn {JsonConvert.SerializeObject(turn)}");
+        }
+
+        private void PassTurn()
+        {
+            var turn = new SwimmingTurn();
+            turn.Pass = true;
             ConnectionManager.SendCommand($"action swimming turn {JsonConvert.SerializeObject(turn)}");
         }
     }

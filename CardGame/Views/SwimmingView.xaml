@@ -65,7 +65,7 @@
             <TextBlock Grid.Row="2" Grid.Column="1" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="14" Visibility="{Binding PlayerCardsSet, Converter={StaticResource BooleanToVisibilityConverter}}">Deine Karten</TextBlock>
             <StackPanel Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" Orientation="Horizontal">
                 <Button Command="{Binding SkipCommand}" IsEnabled="{Binding IsOnTurn}" FontSize="15" Visibility="{Binding MiddleCardsSet, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">Schieben</Button>
-                <Button IsEnabled="{Binding IsOnTurn}" FontSize="15" Margin="5" Visibility="{Binding MiddleCardsSet, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">Passen</Button>
+                <Button Command="{Binding PassCommand}" IsEnabled="{Binding IsOnTurn}" FontSize="15" Margin="5" Visibility="{Binding MiddleCardsSet, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">Passen</Button>
                 <Button Command="{Binding TakeAllCommand}" IsEnabled="{Binding IsOnTurn}" FontSize="15" Visibility="{Binding MiddleCardsSet, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">Alle nehmen</Button>
             </StackPanel>
 
